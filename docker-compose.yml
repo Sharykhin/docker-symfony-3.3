@@ -1,0 +1,25 @@
+version: '2'
+
+services:
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    ports:
+      - "33061:3306"
+  app:
+    container_name: symfony.app
+    build: .docker/php
+    volumes:
+      - .:/app
+      - ./var/logs:/app/var/logs
+      - ./var/cache.:/app/var/cache
+
+  nginx:
+    container_name: symfony.nginx
+    build: .docker/nginx
+    volumes_from:
+      - app
+    ports:
+      - "8000:80"
